@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh mia "cd /data/code/articles & git pull & docker restart blog_docker-hexo-next_1"
+ssh mia "cd /data/code/articles && git pull && docker restart blog_docker-hexo-next_1"
