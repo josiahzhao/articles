@@ -1,0 +1,38 @@
+# Site || 网站信息
+title: 博客的标题
+subtitle: JosiahZhao博客的副标题
+description: JosiahZhao博客的描述
+keywords: 关键词
+author: Josiah Zhao
+language: zh
+timezone: Asia/Hong_Kong
+
+url: http://www.mostintelligentape.com
+
+theme: next
+theme_config:
+  scheme: Gemini
+  menu:
+    主页: / || home
+    文章分类: /categories/说明/ || fa fa-tags
+    归档: /archives || archive
+    关于: /2021/11/22/about/ || user
+  darkmode: true
+  avatar:
+    url: /uploads/vivy.png
+    rounded: true
+  social:
+    GitHub: https://github.com/josiahzhao || github
+    邮箱: mailto:josiahz@foxmail.com || envelope
+    CSDN: https://blog.csdn.net/josiah_zhao?spm=1000.2115.3001.5343&type=lately || code
+    知乎: https://www.zhihu.com/people/josiah-zhao || book
+  tagcloud:
+    min: 12 # Minimum font size in px
+    max: 30 # Maximum font size in px
+    amount: 200 # Total amount of tags
+    orderby: name # Order of tags
+    order: 1 # Sort order
+  github_banner:
+    enable: true
+    permalink: https://github.com/josiahzhao
+    title: Fork NexT on GitHub
