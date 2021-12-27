@@ -18,7 +18,7 @@ theme_config:
     读书笔记: /categories/读书笔记/ || fa fa-tags
     生活经验: /categories/生活经验/ || fa fa-tags
     漫评影评: /categories/漫评影评/ || fa fa-tags
-    吃喝玩乐: /categories/吃喝玩乐/ || fa fa-tags
+    快乐生活: /categories/快乐生活/ || fa fa-tags
     归档: /archives || archive
     关于: /2021/11/22/about/ || user
   darkmode: true
