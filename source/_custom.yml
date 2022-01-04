@@ -35,6 +35,8 @@ theme_config:
     amount: 200 # Total amount of tags
     orderby: name # Order of tags
     order: 1 # Sort order
+  toc:
+    enable: true
   github_banner:
     enable: true
     permalink: https://github.com/josiahzhao
