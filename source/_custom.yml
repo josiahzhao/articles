@@ -37,6 +37,8 @@ theme_config:
     order: 1 # Sort order
   toc:
     enable: true
+    number: true
+    wrap: true
   github_banner:
     enable: true
     permalink: https://github.com/josiahzhao
