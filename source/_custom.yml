@@ -39,6 +39,8 @@ theme_config:
     enable: true
     number: true
     wrap: true
+    expand_all: true
+    max_depth: 4
   github_banner:
     enable: true
     permalink: https://github.com/josiahzhao
