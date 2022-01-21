@@ -29,6 +29,8 @@ theme_config:
     邮箱: mailto:josiahz@foxmail.com || envelope
     CSDN: https://blog.csdn.net/josiah_zhao?spm=1000.2115.3001.5343&type=lately || code
     知乎: https://www.zhihu.com/people/josiah-zhao || book
+    掘金: https://juejin.cn/user/712958874760926 || chevron-circle-up 
+    B站: https://space.bilibili.com/46912556 || youtube-play
   tagcloud:
     min: 12 # Minimum font size in px
     max: 30 # Maximum font size in px
