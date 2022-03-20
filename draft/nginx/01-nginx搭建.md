@@ -42,7 +42,6 @@ docker run -it -p 8000:80 nginx:1.21.6
 
 选择[Windows-1.21.6版本](https://nginx.org/download/nginx-1.21.6.zip)
 
-
 ## Mac安装
 
 ## CentOS安装
