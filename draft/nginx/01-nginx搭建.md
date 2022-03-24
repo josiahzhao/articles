@@ -28,10 +28,11 @@ docker run -it -p 8000:80 nginx:1.21.6
 
 ### 验证
 
+https://www.docker.com/blog/how-to-use-the-official-nginx-docker-image/
+
 直接浏览器访问[http://127.0.0.1:8000](http://127.0.0.1:8000/)即可看到成功启动的效果。
 
 ![docker_install.png]()
-
 
 
 ## Windows安装
