@@ -20,6 +20,8 @@
 如果只是需要部署启动一个nginx，只需要执行下面一行命令即可。
 ```
 docker run -it -p 8000:80 nginx:1.21.6
+$ docker run -it --rm -d -p 8080:80 --name web webserver
+
 ```
 
 参数说明
