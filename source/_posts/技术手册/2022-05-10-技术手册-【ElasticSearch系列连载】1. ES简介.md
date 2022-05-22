@@ -88,6 +88,6 @@ Apache 2.0开源协议是最开放的协议之一：你可以修改源码将其�
 
 ![](https://nginx.mostintelligentape.com/blogimg/202205/es/es_license_update.jpg)
 
-从即将发布的Elastic 7.11版本开始，Elastic 将把 Apache 2.0 授权的 Elasticsearch 和 Kibana代码转为SSPL和Elastic License的双重授权，让用户可以选择使用哪个授权。SSPL是MongoDB创建的一个源码可用的许可证，以体现开源的原则，同时提供保护，防止公有云提供商将开源产品作为服务提供而不回馈。SSPL允许自由和不受限制的使用和修改，但如果你把产品作为服务提供给别人，你也必须在SSPL下公开发布任何修改以及管理层的源代码。
+从Elastic 7.11版本开始，Elastic 将把 Apache 2.0 授权的 Elasticsearch 和 Kibana代码转为SSPL和Elastic License的双重授权，让用户可以选择使用哪个授权。SSPL是MongoDB创建的一个源码可用的许可证，以体现开源的原则，同时提供保护，防止公有云提供商将开源产品作为服务提供而不回馈。SSPL允许自由和不受限制的使用和修改，但如果你把产品作为服务提供给别人，你也必须在SSPL下公开发布任何修改以及管理层的源代码。
 
 > 关注持续更新：下一节 - 【ElasticSearch系列连载】2. 如何本地安装与调试ES
