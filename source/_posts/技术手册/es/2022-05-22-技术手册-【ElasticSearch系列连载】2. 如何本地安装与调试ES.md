@@ -36,7 +36,7 @@ date: 2022-05-22 00:46:25
 
 参考官方的[如何安装Docker](https://www.docker.com/get-started/)选择对应的平台即可进行安装，本文不再赘述。
 
-![](https://nginx.mostintelligentape.com/blogimg/202205/es/es_license_update.jpg)
+![](https://nginx.mostintelligentape.com/blogimg/202205/es/install/docker_download.png)
 
 ### 1.3 Docker镜像选型
 
@@ -91,7 +91,7 @@ josiahzhao@josiahzhaos-Mac-mini articles % docker run --name learnes -d  -p 9200
 
 直接访问本机的9200端口，比如 http://127.0.0.1:9200，如果能够看到如下内容说明启动正常。
 
-![](https://nginx.mostintelligentape.com/blogimg/202205/es/es_license_update.jpg)
+![](https://nginx.mostintelligentape.com/blogimg/202205/es/install/es_start.png)
 
 或者使用curl命令行*curl -i http://127.0.0.1:9200*，如下
 
@@ -165,3 +165,5 @@ josiahzhao@josiahzhaos-Mac-mini articles % docker logs learnes
 ```
 
 直接按照这个的[链接](https://www.elastic.co/guide/en/elasticsearch/reference/7.10/docker.html#_set_vm_max_map_count_to_at_least_262144)操作配置即可。
+
+> 关注持续更新：下一节 - 【ElasticSearch系列连载】3. 如何搭建符合生产环境要求的ES集群
