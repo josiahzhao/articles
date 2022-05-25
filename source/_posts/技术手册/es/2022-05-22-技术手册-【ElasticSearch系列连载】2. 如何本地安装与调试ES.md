@@ -69,7 +69,7 @@ docker network create learnesnetwork
 启动命令如下
 
 ```
-docker run --name learnes --net learnesnetwork -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" arm64v8/elasticsearch:7.10.1
+docker run --name learnes --net learnesnetwork -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.10.1
 ```
 
 命令说明
