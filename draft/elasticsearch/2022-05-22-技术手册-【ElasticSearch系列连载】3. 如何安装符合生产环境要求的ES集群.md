@@ -24,9 +24,32 @@ date: 2022-05-22 00:46:25
 docker rm -f learnes01
 docker run --name learnes01 --net learnesnetwork -d -p 9200:9200 -p 9300:9300 --add-host learnes01:192.168.51.53 --add-host learnes02:192.168.51.121 -e "node.name=learnes01" -e "network.publish_host=192.168.51.53" -e "cluster.name=learnes-cluster" -e "discovery.seed_hosts=learnes02" -e "cluster.initial_master_nodes=learnes01,learnes02" elasticsearch:7.10.1
 
+discovery.zen.ping.unicast.hosts: ["k8snode16","None","k8snode15","k8smaster01"]
+#
+# Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
+#
+discovery.zen.minimum_master_nodes: 3
 
-docker rm -f learnes02
-docker run --name learnes02 --net learnesnetwork -d -p 9200:9200 -p 9300:9300 --add-host learnes01:192.168.51.53 --add-host learnes02:192.168.51.121 -e "node.name=learnes02" -e "network.publish_host=192.168.51.121" -e "cluster.name=learnes-cluster" -e "discovery.seed_hosts=learnes01" -e "cluster.initial_master_nodes=learnes01,learnes02" elasticsearch:7.10.1
+
+docker network create esnet
+
+
+docker rm -f es02
+docker run \
+--name es02 \
+--net esnet \
+-d -p 9200:9200 -p 9300:9300 \
+-v /data/elasticsearch/es02/data:/usr/share/elasticsearch/data \
+-v /data/elasticsearch/es02/logs:/usr/share/elasticsearch/logs \
+-v /data/elasticsearch/es02/config:/usr/share/elasticsearch/config \
+--add-host es01:192.168.51.53 --add-host es02:192.168.51.121 \
+-e "TAKE_FILE_OWNERSHIP=1" \
+-e "node.name=es02" \
+-e "network.publish_host=192.168.51.121" \
+-e "cluster.name=learnes-cluster" \
+-e "discovery.seed_hosts=es01" \
+-e "cluster.initial_master_nodes=es01,es02" \
+elasticsearch:7.10.1
 
 单机部署
 docker rm -f learnes01
