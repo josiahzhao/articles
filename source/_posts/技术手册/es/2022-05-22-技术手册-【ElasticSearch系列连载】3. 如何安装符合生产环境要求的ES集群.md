@@ -126,11 +126,12 @@ kibana需要配置文件（kibana本身是一个无状态服务，不需要额�
   - 99号节点叫做es99，数据存储在/data/elasticsearch/es99/{data,logs,config}中
 
 具体方案如下：
+
 | 部署内容 | 部署名称 | 端口号 | 机器 | 数据目录 |
 | --- | --- | --- | --- | --- |
-| ES节点0 | es00 | 9200 9300 | 机器A | 数据存储目录：/data/elasticsearch/es00/data 日志文件目录：/data/elasticsearch/es00/logs 配置文件目录：/data/elasticsearch/es00/config |
-| ES节点1 | es01 | 9201 9301 | 机器A | 数据存储目录：/data/elasticsearch/es01/data 日志文件目录：/data/elasticsearch/es01/logs 配置文件目录：/data/elasticsearch/es01/config |
-| ES节点2 | es02 | 9202 9302 | 机器B | 数据存储目录：/data/elasticsearch/es02/data 日志文件目录：/data/elasticsearch/es02/logs 配置文件目录：/data/elasticsearch/es02/config |
+| ES节点0 | es00 | 9200 9300 | 机器A | 数据存储目录：/data/elasticsearch/es00/data 日志文件目录：/data/elasticsearch/es00/logs<br>配置文件目录：/data/elasticsearch/es00/config |
+| ES节点1 | es01 | 9201<br>9301 | 机器A | 数据存储目录：/data/elasticsearch/es01/data<br>日志文件目录：/data/elasticsearch/es01/logs<br>配置文件目录：/data/elasticsearch/es01/config |
+| ES节点2 | es02 | 9202<br>9302 | 机器B | 数据存储目录：/data/elasticsearch/es02/data<br>日志文件目录：/data/elasticsearch/es02/logs<br>配置文件目录：/data/elasticsearch/es02/config |
 | Kibana服务 | kib | 5601 | 机器B | 不需要 |
 
 ## 3 单节点部署
@@ -442,11 +443,12 @@ kibana:7.10.1
   - 99号节点叫做es99，数据存储在/data/elasticsearch/es99/{data,logs,config}中
 
 具体方案如下：
+
 | 部署内容 | 部署名称 | 端口号 | 机器 | 数据目录 |
 | --- | --- | --- | --- | --- |
-| ES节点0 | es00 | 9200 9300 | 机器A | 数据存储目录：/data/elasticsearch/es00/data 日志文件目录：/data/elasticsearch/es00/logs 配置文件目录：/data/elasticsearch/es00/config |
-| ES节点1 | es01 | 9201 9301 | 机器A | 数据存储目录：/data/elasticsearch/es01/data 日志文件目录：/data/elasticsearch/es01/logs 配置文件目录：/data/elasticsearch/es01/config |
-| ES节点2 | es02 | 9202 9302 | 机器B | 数据存储目录：/data/elasticsearch/es02/data 日志文件目录：/data/elasticsearch/es02/logs 配置文件目录：/data/elasticsearch/es02/config |
+| ES节点0 | es00 | 9200<br>9300 | 机器A | 数据存储目录：/data/elasticsearch/es00/data<br>日志文件目录：/data/elasticsearch/es00/logs<br>配置文件目录：/data/elasticsearch/es00/config |
+| ES节点1 | es01 | 9201<br>9301 | 机器A | 数据存储目录：/data/elasticsearch/es01/data<br>日志文件目录：/data/elasticsearch/es01/logs<br>配置文件目录：/data/elasticsearch/es01/config |
+| ES节点2 | es02 | 9202<br>9302 | 机器B | 数据存储目录：/data/elasticsearch/es02/data<br>日志文件目录：/data/elasticsearch/es02/logs<br>配置文件目录：/data/elasticsearch/es02/config |
 | Kibana服务 | kib | 5601 | 机器B | 不需要 |
 
 ### 4.1 ES集群持久化存储与配置部署
