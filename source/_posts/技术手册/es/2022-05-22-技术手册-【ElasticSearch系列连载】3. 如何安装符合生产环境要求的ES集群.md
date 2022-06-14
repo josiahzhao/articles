@@ -484,7 +484,7 @@ docker run \
 -v /data/elasticsearch/es00/data:/usr/share/elasticsearch/data \
 -v /data/elasticsearch/es00/logs:/usr/share/elasticsearch/logs \
 -v /data/elasticsearch/es00/config:/usr/share/elasticsearch/config \
---add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53 \
+--add-host es00:192.168.51.2 --add-host es01:192.168.51.2 --add-host es02:192.168.51.1 \
 elasticsearch:7.10.1
 ```
 上面的命令参数补充说明：
@@ -526,7 +526,7 @@ docker run \
 -v /data/elasticsearch/es01/data:/usr/share/elasticsearch/data \
 -v /data/elasticsearch/es01/logs:/usr/share/elasticsearch/logs \
 -v /data/elasticsearch/es01/config:/usr/share/elasticsearch/config \
---add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53 \
+--add-host es00:192.168.51.2 --add-host es01:192.168.51.2 --add-host es02:192.168.51.1 \
 elasticsearch:7.10.1
 ```
 **第四步：验证**
@@ -561,7 +561,7 @@ docker run \
 -v /data/elasticsearch/es02/data:/usr/share/elasticsearch/data \
 -v /data/elasticsearch/es02/logs:/usr/share/elasticsearch/logs \
 -v /data/elasticsearch/es02/config:/usr/share/elasticsearch/config \
---add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53 \
+--add-host es00:192.168.51.2 --add-host es01:192.168.51.2 --add-host es02:192.168.51.1 \
 elasticsearch:7.10.1
 ```
 **第四步：验证**
