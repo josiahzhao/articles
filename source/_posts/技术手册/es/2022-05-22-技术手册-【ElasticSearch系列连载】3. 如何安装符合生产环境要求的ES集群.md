@@ -5,10 +5,12 @@ categories:
 tags:
 - 搜索
 - ElasticSearch
-date: 2022-05-22 00:46:25
+date: 2022-06-02 00:46:25
 ---
 
 ![](https://nginx.mostintelligentape.com/blogimg/202205/es/es_logo.jpg)
+
+# 【ElasticSearch系列连载】3. 如何安装符合生产环境要求的ES集群
 
 通过本文，将会循序渐进地了解到ES的若干部署方案，以及相关的基础操作与配置。
 
@@ -375,7 +377,7 @@ docker exec -it es00 bash
 
 ![](https://nginx.mostintelligentape.com/blogimg/202206/es/enter_es00.jpg)
 
-然后执行如下语句，先输入`y`进行确认，然会要求定义ES相关各类账户的密码，输入若干**不少于6位的，不是纯数字的**若干平台（elastic，apm，kibana，logstash，beats，remote_monitor）的密码，如图。
+然后执行如下语句，先输入`y`进行确认，然后会要求定义ES相关各类账户的密码，输入**不少于6位的，不是纯数字的**若干平台（elastic，apm，kibana，logstash，beats，remote_monitor）的密码，如图。
 
 ```
 ./bin/elasticsearch-setup-passwords  interactive
@@ -594,84 +596,80 @@ elasticsearch:7.10.1
 ![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_cluster_success.jpg)
 
 ### 4.2 配套Kibana部署
+
+执行如下命令，将下面的http://192.168.51.1:9200换成对应部署的es的地址与端口即可。
+
+> 不可以使用127.0.0.1或者localhost，需要使用宿主机的网卡ip
+
+```
+docker run \
+--name kib \
+-d -p 5601:5601 \
+-e "ELASTICSEARCH_HOSTS=http://192.168.51.1:9200" \
+kibana:7.10.1
+```
+
+启动后访问IP:5601即可。
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/kibana.jpg)
+
 ### 4.3 启用加密
 
+#### 第一步：进入容器
 
-
-
-
-
-
-
-
-
-
-
-上一节介绍的一键安装方式，可以快速启动一个ES环境用于学习，调试和测试，但是还不足以作为生产环境，比如：
-
-- 不支持集群模式 done
-- 无法轻易对配置文件进行调整与维护 done
-- 后续写入的搜索数据会随着容器删除而删除，没有在本地进行持久化存储 done
-- 9200端口暴露，不需要认证即可访问 done
-- 没有可视化管理界面 done
-
-如果想一步到位了解更详细的ES部署方式用于生产环境，可以继续阅读这一节。
-
-所以，这一节将介绍如何部署一个具有**加密**且具有数据+配置文件**持久化存储**的ES**集群**（2个节点）
-
-
-多机部署
-docker rm -f learnes01
-docker run --name learnes01 --net learnesnetwork -d -p 9200:9200 -p 9300:9300 --add-host learnes01:192.168.51.53 --add-host learnes02:192.168.51.121 -e "node.name=learnes01" -e "network.publish_host=192.168.51.53" -e "cluster.name=learnes-cluster" -e "discovery.seed_hosts=learnes02" -e "cluster.initial_master_nodes=learnes01,learnes02" elasticsearch:7.10.1
-
-discovery.zen.ping.unicast.hosts: ["k8snode16","None","k8snode15","k8smaster01"]
-#
-# Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
-#
-discovery.zen.minimum_master_nodes: 3
-
-
-docker network create esnet
-
-
-
+在确保es00运行的情况下，执行如下命令进入容器内部（以便使用es相关脚本进行加密证书的生成与配置）
 ```
-esname=$1
-addhost=$2
-escode=${esname:0-2: 2}
-echo 要部署的ES节点名称:$esname
-echo 使用的端口号:$escode
-echo 要添加的hosts:$addhost
-
-docker rm -f $esname
-# rm -fr /data/elasticsearch/$esname
-mkdir -p /data/elasticsearch/$esname/{data,logs,config}
-chmod 777 -R /data/elasticsearch/$esname
-# cp /data/elasticsearch/init_config/$esname/* /data/elasticsearch/$esname/config/
-docker run \
---name $esname \
--d -p 92$escode:92$escode -p 93$escode:93$escode \
--v /data/elasticsearch/$esname/data:/usr/share/elasticsearch/data \
--v /data/elasticsearch/$esname/logs:/usr/share/elasticsearch/logs \
--v /data/elasticsearch/$esname/config:/usr/share/elasticsearch/config \
-$addhost \
-elasticsearch:7.10.1
+docker exec -it es00 bash
 ```
+如图
 
-./deploy_es.sh es00 '--add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53'
-./deploy_es.sh es01 '--add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53'
-./deploy_es.sh es02 '--add-host es00:192.168.51.121 --add-host es01:192.168.51.121 --add-host es02:192.168.51.53'
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/enter_es00.jpg)
 
-## 加密
+#### 第二步：制作p12
+
+1. 创建本地CA
+
+仍然在容器内，执行如下语句，第一次要求输入的文件名称直接回车（图中第1个箭头），第二次要求输入的证书密码输入一个不小于6位的密码（图中第2个箭头），记录好，完成后当前目录会多一个"elastic-stack-ca.p12"文件（图中第3个箭头）。
+
 ```
 ./bin/elasticsearch-certutil ca
+```
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_create_ca.jpg)
+
+2. 生成数字证书
+
+仍然在容器内，执行如下命令，第一次要求输入时输入上面创建本地CA时输入的密码（图中第1个箭头），第二次要求输入的文件名称直接回车（图中第2个箭头），第三次要求输入时也可以输入上面创建本地CA时输入的密码（图中第3个箭头），完成后当前目录会多一个"elastic-certificates.p12"文件（图中第4个箭头），然后将其移动到./config/certificates中去（也是我们做了持久化的目录），最后对其的权限进行修改确保ES能够正常使用它（图中第5个箭头）。
+
+```
 ./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
 mkdir ./config/certificates
 mv ./elastic-certificates.p12 ./config/certificates/
 chmod 777 ./config/certificates/elastic-certificates.p12
+```
 
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_create_cert.jpg)
+
+3. 将数字证书拷贝到其他节点上
+   
+将上面的elastic-certificates.p12文件拷贝到**所有节点**上：
+
+- 文件在容器内的：/usr/share/elasticsearch/config/certificates/ 目录下
+- 文件也在宿主机的：/data/elasticsearch/es01/config/certificates/ 目录下
+- 拷贝到其他节点（对于本文还剩es01和es02）的同样目录
+
+#### 第三步：修改配置使用证书
+
+依次进入所有节点的容器，通过执行如下的vi命令编辑elasticsearch.yml文件
+
+```
 vi ./config/elasticsearch.yml
+```
 
+添加如下内容，告知ES使用刚才创建的证书文件，如图：
+
+```
 http.cors.enabled: true
 http.cors.allow-origin: "*"
 http.cors.allow-headers: Authorization,X-Requested-With,Content-Type,Content-Length
@@ -682,76 +680,106 @@ xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.keystore.path: /usr/share/elasticsearch/config/certificates/elastic-certificates.p12
 xpack.security.transport.ssl.truststore.path: /usr/share/elasticsearch/config/certificates/elastic-certificates.p12
+```
 
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_add_cert_config.jpg)
+
+
+最后执行如下两行语句，如果需要输入密码使用第二步的密码即可
+
+```
 ./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
 ./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+```
 
-## 需要拷贝证书，不能重新生成
--------------
+#### 第四步：重启ES
+
+对所有机器的所有es节点进行重启。
+
+```
+docker restart es00
+docker restart es01
+docker restart es02
+```
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_restart.jpg)
+
+
+#### 第五步：配置ES访问密码
+
+在确保es服务运行的情况下，找**任意一个节点**执行如下命令进入容器（密码设置会自动同步到各个节点上，所以不用重复执行）
+```
+docker exec -it es00 bash
+```
+如图
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/enter_es00.jpg)
+
+然后执行如下语句，先输入`y`进行确认，然后会要求定义ES相关各类账户的密码，输入**不少于6位的，不是纯数字的**若干平台（elastic，apm，kibana，logstash，beats，remote_monitor）的密码，如图。
+
+```
 ./bin/elasticsearch-setup-passwords  interactive
-
-vi /usr/local/kibana/config/kibana.yml
-
-添加：
-
-elasticsearch.username: "kibana"
-
-elasticsearch.password: "密码"
-
-
 ```
 
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_set_pwd.jpg)
 
-curl --user elastic:123456 -i http://192.168.51.121:9200
+
+然后浏览器访问http://IP地址:9200，即会弹出密码框，用户名输入elastc，密码输入刚才定义的密码，即可进入，如图。
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/es_has_pwd.jpg)
 
 
-## kibana
-docker rm -f kib
-mkdir -p /data/kibana
-chmod 777 -R /data/elasticsearch/$esname
-
+注：如果想要修改密码的话，可以使用下面的方法，注意--user后面跟上目前elastic用户的账号密码
+- 修改elastic账号密码为a123456:
 ```
-#
-# ** THIS IS AN AUTO-GENERATED FILE **
-#
-
-# Default Kibana configuration for docker target
-server.name: kibana
-server.host: "0"
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+curl --user elastic:123456  -XPOST --header "Content-Type: application/json" -d '{"password": "a123456"}' http://192.168.1.1:9200/_security/user/elastic/_password
+```
+- 修改kibana账号密码为123456a:
+```
+curl --user elastic:a123456  -XPOST --header "Content-Type: application/json" -d '{"password": "123456a"}' http://192.168.1.1:9200/_security/user/kibana/_password
 ```
 
+#### 第六步：配置Kibana访问密码
+
+此时ES已经有了密码,如果再访问我们上面部署的Kibana会发现无法访问了，我们也需要告诉Kibana对应ES的密码才行，如图。
+
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/kibana_need_pwd.jpg)
+
+> 如果之前已经启动了Kibana，可以先执行`docker rm -f kib`进行删除
+
+启动命令加入ES的账号密码信息即可，如下，将ELASTICSEARCH_HOSTS，ELASTICSEARCH_USERNAME，ELASTICSEARCH_PASSWORD配置成你的ES的地址、账号和密码即可。
+
+```
 docker run \
 --name kib \
 -d -p 5601:5601 \
--v /data/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml \
+-e "ELASTICSEARCH_HOSTS=http://192.168.51.1:9200" \
+-e "ELASTICSEARCH_USERNAME=elastic" \
+-e "ELASTICSEARCH_PASSWORD=a123456" \
 kibana:7.10.1
+```
+
+如图。
+![](https://nginx.mostintelligentape.com/blogimg/202206/es/kibana_login.jpg)
 
 
+## 5 可能问题
 
+### 5.1 vm.max_map_count太低
 
-单机部署
-docker rm -f learnes01
-docker rm -f learnes02
+如果报错vm.max_map_count太低，需要将其设置为至少262144，[参考链接](https://www.elastic.co/guide/en/elasticsearch/reference/7.10/docker.html#_set_vm_max_map_count_to_at_least_262144)
 
-docker run --name learnes01 --net learnesnetwork -d -p 9200:9200 -p 9300:9300 -e "node.name=learnes01" -e "cluster.name=learnes-cluster" -e "discovery.seed_hosts=learnes02" -e "cluster.initial_master_nodes=learnes01,learnes02" elasticsearch:7.10.1
-
-
-docker run --name learnes02 --net learnesnetwork -d -e "node.name=learnes02" -e "cluster.name=learnes-cluster" -e "discovery.seed_hosts=learnes01" -e "cluster.initial_master_nodes=learnes01,learnes02" elasticsearch:7.10.1
-
-开启认证
-
-## 可能问题
-docker存储性能问题
-https://stackoverflow.com/questions/46627979/what-is-the-default-user-and-password-for-elasticsearch
-https://baijiahao.baidu.com/s?id=1703600336205273370&wfr=spider&for=pc
-https://www.elastic.co/guide/en/elasticsearch/reference/7.10/settings.html
-https://stackoverflow.com/questions/66433674/what-does-discovery-seed-hosts-and-cluster-initial-master-nodes-mean-in-es
-https://stackoverflow.com/questions/14379575/configure-port-number-of-elasticsearch
-
+```
 sysctl -w vm.max_map_count=262144
+```
 
-参考文档
+### 5.2 ES性能不足
+
+在上文的jvm.options中，关于堆内存的设置默认是1GB，对于大部分生产环境来说是不够的，这一块可以根据实际情况进行调整
+
+
+
+## 参考文档
 https://github.com/elastic/kibana/issues/55031
 https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html
 https://blog.csdn.net/hhf799954772/article/details/115870012
@@ -762,5 +790,9 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.10/docker.html
 https://stackoverflow.com/questions/69415530/start-up-elastic-search-on-multiple-hosts-using-docker
 https://discuss.elastic.co/t/handshake-failed-unexpected-remote-node/117082
 https://docs.docker.com/engine/reference/run/#network-settings
-
+https://stackoverflow.com/questions/46627979/what-is-the-default-user-and-password-for-elasticsearch
+https://baijiahao.baidu.com/s?id=1703600336205273370&wfr=spider&for=pc
+https://www.elastic.co/guide/en/elasticsearch/reference/7.10/settings.html
+https://stackoverflow.com/questions/66433674/what-does-discovery-seed-hosts-and-cluster-initial-master-nodes-mean-in-es
+https://stackoverflow.com/questions/14379575/configure-port-number-of-elasticsearch
 
