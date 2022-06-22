@@ -1,10 +1,10 @@
 ---
 title: 【ElasticSearch系列连载】4. 与ES通信的两种方式
 categories:
-* 技术手册
+- 技术手册
 tags:
-* 搜索
-* ElasticSearch
+- 搜索
+- ElasticSearch
 date: 2022-06-02 01:46:25
 ---
 
