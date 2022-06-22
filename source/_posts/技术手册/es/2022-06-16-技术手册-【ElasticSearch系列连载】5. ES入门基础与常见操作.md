@@ -1,10 +1,10 @@
 ---
 title: 【ElasticSearch系列连载】5. ES入门基础与常见操作
 categories:
-* 技术手册
+- 技术手册
 tags:
-* 搜索
-* ElasticSearch
+- 搜索
+- ElasticSearch
 date: 2022-06-03 00:46:25
 ---
 

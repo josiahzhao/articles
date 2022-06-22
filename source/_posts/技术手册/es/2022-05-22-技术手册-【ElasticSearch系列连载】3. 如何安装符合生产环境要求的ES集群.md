@@ -1,10 +1,10 @@
 ---
 title: 【ElasticSearch系列连载】3. 如何安装符合生产环境要求的ES集群
 categories:
-* 技术手册
+- 技术手册
 tags:
-* 搜索
-* ElasticSearch
+- 搜索
+- ElasticSearch
 date: 2022-06-02 00:46:25
 ---
 
